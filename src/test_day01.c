@@ -1,3 +1,6 @@
+
+#include <stdio.h>
+#include <stdint.h>
 // # [비트 연산과 데이터 표현 (Bitwise & Data)]
 
 // - **Day 1. 특정 비트 제어 매크로 구현**
@@ -21,5 +24,31 @@
 //         Result   Hex: 0x12345661 | Bin: 0001 0010 0011 0100 0101 0110 0110 0001 
         
 //         [CHECK]  Bit 3 is currently: 0
-//         ```
+#define BIT_SET(var, pos)    ((var) |=  (1UL<<(pos)))
 
+int get_bi(data)
+{
+    int arr_bi[32];
+    int count = 0;
+    int temp=data;
+    for(int i=1; i <= 32; i++) {
+        if (temp%2 == 0) { arr_bi[i-1] = 0; }
+        else {arr_bi[i-1] = 1;}
+        temp = temp/2;
+    }
+    for (int i=31; i>=0; i--) {
+        if (i%4 == 0) { printf("%d ",arr_bi[i]); }
+        else {printf("%d",arr_bi[i]); }
+    }
+    
+    return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+    uint32_t data = 0x12345678;
+    
+    printf("%d",get_bi(data));
+
+    return 0;
+}
