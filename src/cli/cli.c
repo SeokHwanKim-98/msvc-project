@@ -1,4 +1,5 @@
 #include "cli.h"
+#include "uart_win.h"
 #include <Windows.h>
 
 static HANDLE hStdout = INVALID_HANDLE_VALUE;
@@ -12,8 +13,6 @@ static cli_callback_t ctrl_c_handler = NULL;
 
 void cliInit(void)
 {
-    hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-
     cli_line_idx = 0;
     cli_cursor = 0;
     ctrl_c_handler = NULL;
@@ -38,9 +37,7 @@ void cliPrintf(char *fmt, ...)
     va_end(args);
 
     if(len > 0 ) {
-        DWORD written = 0;
-        WriteConsoleA(hStdout, (uint8_t*)buf, (DWORD)len, &written, NULL);
-        
+        uartWrite(0, (uint8_t*)buf, (uint32_t*)len);
     }
 }
 

@@ -2,21 +2,31 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool is_little_endian(uint32_t input_data) {
-    bool result = false;
-    // data를 주소로 받는다 -> int32값의 주소를 int8로 형변환해서 받고
-    // 가장 앞 메모리 가장 뒷 메모리 비교 ->
-    // 앞 메모리가 더 큰값이면 true 작은값이면 false
-    // ??
-    uint8_t* temp = (uint8_t*)&input_data;
-    // 변환되어 받은값의 마지막을 어떻게 찾는가
-    // 32를 8로 변환했으니 마지막번호는 항상 3?
+// bool is_little_endian(uint32_t input_data) {
+//     bool result = false;
+//     // data를 주소로 받는다 -> int32값의 주소를 int8로 형변환해서 받고
+//     // 가장 앞 메모리 가장 뒷 메모리 비교 ->
+//     // 앞 메모리가 더 큰값이면 true 작은값이면 false
+//     // ??
+//     uint8_t* temp = (uint8_t*)&input_data;
+//     // 변환되어 받은값의 마지막을 어떻게 찾는가
+//     // 32를 8로 변환했으니 마지막번호는 항상 3?
     
-    // 크기 순서대로라면 굳이 처음과 끝을 비교할 이유가 있는가? -> 없다
-    // 큰 값대로 들어온다? 들어온 순서? 의 역방향?
-    if (temp[0] > temp[1])  { result = true; }
+//     // 크기 순서대로라면 굳이 처음과 끝을 비교할 이유가 있는가? -> 없다
+//     // 큰 값대로 들어온다? 들어온 순서? 의 역방향?
+//     if (temp[0] > temp[1])  { result = true; }
 
-    return result;
+//     return result;
+// } 
+// 주석처리 이유 : 들어온 데이터의 앞뒤를 비교하여 순서를 보고 결정하는게 아니라
+// 내가 임의의 데이터를 저장해서 그 데이터의 저장위치를 보고 판단하는게
+// 올바른 방법이기 때문
+
+bool is_little_endian(void)
+{
+    uint32_t data = 1;
+
+    return *(uint8_t *)&data == 1;
 }
 
 uint32_t swap_endian(uint32_t val) {
