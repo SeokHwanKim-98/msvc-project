@@ -11,6 +11,41 @@ static uint16_t cli_cursor = 0;
 static cli_input_state_t input_state = CLI_STATE_NORMAL;
 static cli_callback_t ctrl_c_handler = NULL;
 
+static cliRedrawTail(void) {
+    for (int i = cli_cursor; i < cli_line_idx; i++) {
+        cliPrintf("%c",cli_line_buf[i]);
+    }
+    cliPrintf(" \b");
+    for(int i = 0; i < (cli_line_idx-cli_cursor); i++) {
+        cliPrintf("\b");
+    }
+}
+
+static void handleChrInsert(uint8_t c) {
+    if(cli_line_idx >= CLI_LINE_BUF_MAX - 1) return;
+
+    for (int i = cli_line_idx; i < cli_cursor; i--) {
+        cli_line_buf[i] = cli_line_buf[i-1];
+    }
+    cli_line_buf[cli_cursor] = c;
+    cli_line_idx++;
+    cli_cursor++;
+
+    cliPrintf("%c",c);
+}
+
+static void handleBackspace(void) {
+    if (cli_cursor == 0) return;
+
+    for (int i = cli_cursor; i <= cli_line_idx; i++) {
+        cli_line_buf[i-1] = cli_line_buf[i];
+    }
+    cli_line_idx--;
+    cli_cursor--;
+    cliPrintf("\b");
+    cliRedrawTail();
+}
+
 void cliInit(void)
 {
     cli_line_idx = 0;
@@ -25,6 +60,27 @@ void cliInit(void)
 
 void cliMain(void)
 {
+    uint8_t rx_data;
+    if(uartReadBlock(0,&rx_data,0xFFFFFFFF) == true) {
+        switch(rx_data) 
+        {
+            case 0x03 :
+                cliPrintf("^C\r\nExiting Application by Ctrl + C.\r\n Goodbye.");
+                exit(0);
+                break;
+            case '\b' :
+            case 127 :
+                handleBackspace();
+                break;
+            
+            default :
+                if(32 <= rx_data && rx_data <= 126 ) {
+                    handleChrInsert(rx_data);
+                    // cliPrintf("%c",rx_data);
+                }
+                break;
+        }
+    }
 }
 
 void cliPrintf(char *fmt, ...)

@@ -10,6 +10,6 @@ void appMain(void)
 {
     while(1)
     {
-        // cliMain();
+        cliMain();
     }
 }
