@@ -2,7 +2,6 @@
 #include "uart_win.h"
 #include <Windows.h>
 
-static HANDLE hStdout = INVALID_HANDLE_VALUE;
 static char cli_line_buf[CLI_LINE_BUF_MAX];
 static uint16_t cli_line_idx = 0;
 static uint16_t cli_cursor = 0;
@@ -11,7 +10,7 @@ static uint16_t cli_cursor = 0;
 static cli_input_state_t input_state = CLI_STATE_NORMAL;
 static cli_callback_t ctrl_c_handler = NULL;
 
-static cliRedrawTail(void) {
+static cliRedrawTail(void) { // 백스페이스바로 지운뒤 화면 새로그리기(안하면 커서만 움직임)
     for (int i = cli_cursor; i < cli_line_idx; i++) {
         cliPrintf("%c",cli_line_buf[i]);
     }
@@ -64,19 +63,20 @@ void cliMain(void)
     if(uartReadBlock(0,&rx_data,0xFFFFFFFF) == true) {
         switch(rx_data) 
         {
-            case 0x03 :
+            case 0x03 : // 종료
                 cliPrintf("^C\r\nExiting Application by Ctrl + C.\r\n Goodbye.");
                 exit(0);
                 break;
-            case '\b' :
-            case 127 :
+            case '\b' : // 지우기, 127입력값과 같은거라서 break;를 사용안함 
+            case 127 : // backspace
                 handleBackspace();
                 break;
             
-            default :
+            default : // 특수 입력키가 아닌 화면에 표시되는 타입들에 대하여
                 if(32 <= rx_data && rx_data <= 126 ) {
+                    // cliPrintf("%c",rx_data); // 원래는 작성만 했었음
                     handleChrInsert(rx_data);
-                    // cliPrintf("%c",rx_data);
+                    // 작성하면서 커서, 라인 인덱스값에 변화가 필요해서 함수로 변경
                 }
                 break;
         }
