@@ -29,7 +29,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void output(unsigned int num) {
+void input(unsigned int num) {
+    uint8_t buf[8];
+
     // 2진수 출력 for문
     printf("Input : 0x%.2X ( ",num);
     for (int i = 8; i > 0; i--) {
@@ -51,16 +53,15 @@ void output(unsigned int num) {
     printf(")\n");
     printf("Verify : OK\n");
     printf("---------------\n");
-
     
 }
 
 
 int main(int argc, char const *argv[])
 {
-    output(0xD2);
-    output(0x0F);
-    output(0xAA);
-    output(0x12);
+    input(0xD2);
+    input(0x0F);
+    input(0xAA);
+    input(0x12);
     return 0;
 }
