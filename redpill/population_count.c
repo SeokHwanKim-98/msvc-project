@@ -54,28 +54,28 @@ int kernighan_algorithm(uint32_t num) {
 }
 
 int swar_algorithm(uint32_t num) {
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    print_binary(num); // 눈으로 보자
+    printf("\n");
 
-    num = num - ((num >> 1) & 0x55555555); // 2비트마가 1의 갯수를 저장
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    num = num - ((num >> 1) & 0x55555555); // 2비트마다 1의 갯수를 저장
+    print_binary(num); // 눈으로 보자
+    printf("\tnum = num - ((num >> 1) & 0x55555555)\n");
 
     num = (num & 0x33333333) + ((num >> 2) & 0x33333333); // 4비트 단위로 병합
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    print_binary(num); // 눈으로 보자
+    printf("\tnum = (num & 0x33333333) + ((num >> 2) & 0x33333333)\n");
 
     num = (num + (num >> 4)) & 0x0F0F0F0F; // 8비트 단위로 병합
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    print_binary(num); // 눈으로 보자
+    printf("\tnum = (num + (num >> 4)) & 0x0F0F0F0F;\n");
 
     num = num + (num >> 8); // 16비트 단위로 병합
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    print_binary(num); // 눈으로 보자
+    printf("\tnum = num + (num >> 8)\n");
 
     num = num + (num >> 16); // 32비트 단위로 병합
-    // print_binary(num); // 눈으로 보자
-    // printf("\n");
+    print_binary(num); // 눈으로 보자
+    printf("\tnum = num + (num >> 16)\n");
 
     return num & 0x3F; // 입력제한이 32비트임으로 하위 비트6개 값만 수집
 }
